@@ -1,36 +1,20 @@
-#include "struct.h"
+#include "abm.h"
 
-Pelicula *cargarDatos(Pelicula *datosDePelicula)
+//////////////////////////////////////////////////////////////////
+void mostrarMenu()
 {
-    fflush(stdin);
-    printf("Ingrese titulo\n");
-    scanf("%[^\n]", &datosDePelicula->titulo);
-
-    fflush(stdin);
-    printf("Ingrese genero\n");
-    scanf("%[^\n]", &datosDePelicula->genero);
-    fflush(stdin);
-
-    printf("Ingrese duracion en horas\n");
-    scanf("%f", &datosDePelicula->duracion);
-    fflush(stdin);
-
-    printf("Ingrese descripcion\n");
-    scanf("%[^\n]", &datosDePelicula->descripcion);
-    fflush(stdin);
-
-    printf("Ingrese puntaje del 1 al 10\n");
-    scanf("%d", &datosDePelicula->puntaje);
-    fflush(stdin);
-
-    printf("Ingrese link de imagen\n");
-    scanf("%[^\n]", &datosDePelicula->linkDeImagen);
-    fflush(stdin);
-
-    datosDePelicula->estado = ACTIVO;
-
-    return datosDePelicula;
+    printf("\n");
+    printf("1- Agregar pelicula\n");
+    printf("2- Borrar pelicula\n");
+    printf("3- Modificar pelicula\n");
+    printf("4- Generar pagina web\n");
+    printf("5- Leer archivo\n");
+    printf("6- Salir\n");
 }
+
+//////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////
 
 void alta(Pelicula *datosDePelicula)
 {
@@ -39,6 +23,7 @@ void alta(Pelicula *datosDePelicula)
     if (archivo == NULL)
     {
         printf("No se pudo abrir correctamente el archivo\n");
+        system("pause");
         exit(1);
     }
 
@@ -54,6 +39,8 @@ void alta(Pelicula *datosDePelicula)
     fclose(archivo);
 }
 
+//////////////////////////////////////////////////////////////////
+
 void modificar()
 {
 
@@ -66,7 +53,8 @@ void modificar()
 
     if (archivo == NULL)
     {
-        printf("No se logro abrir el archivo");
+        printf("No se logro abrir el archivo\n");
+        system("pause");
         exit(1);
     }
 
@@ -100,6 +88,8 @@ void modificar()
     fclose(archivo);
 }
 
+//////////////////////////////////////////////////////////////////
+
 void baja()
 {
     char peliaux[MAX];
@@ -109,14 +99,17 @@ void baja()
     {
 
         printf("\nIngrese el nombre de la pelicula a borrar: ");
-        scanf("%s", peliaux);
+        fflush(stdin);
+        scanf("%[^\n]", &peliaux);
+        fflush(stdin);
+
         Pelicula datoPelicula;
 
         while (!feof(arch))
         {
             fread(&datoPelicula, sizeof(Pelicula), 1, arch);
 
-            if (strcmp(datoPelicula.titulo, peliaux) == 0)
+            if (strcmp(datoPelicula.titulo, peliaux) == 0 && datoPelicula.estado == ACTIVO)
             {
 
                 int posicion = ftell(arch) - sizeof(Pelicula);
@@ -125,9 +118,17 @@ void baja()
                 datoPelicula.estado = BORRADO;
 
                 fwrite(&datoPelicula, sizeof(Pelicula), 1, arch);
+
+                printf("La pelicula fue eliminada correctamente\n");
                 break;
             }
         }
         fclose(arch);
+    }
+    else
+    {
+        printf("No se pudo abrir correctamente el archivo\n");
+        system("pause");
+        exit(1);
     }
 }
